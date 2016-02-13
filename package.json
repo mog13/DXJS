@@ -1,0 +1,25 @@
+{
+  "name": "dxjs",
+  "version": "0.0.1",
+  "description": "s.split(/[+,\\-,\\/,*]/)",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.9.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mog13/DXJS.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mog13/DXJS/issues"
+  },
+  "homepage": "https://github.com/mog13/DXJS#readme"
+}
