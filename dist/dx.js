@@ -1,0 +1,1 @@
+var Utilities=function(){this.evaluateRoll=function(t){for(var i=t.split("d")[0],l=t.split("d")[1],n=[],o=0,e=0;i>e;e++)n.push(this.roll(l)),o+=n[n.length-1];return{values:n,total:o}},this.roll=function(t){return Math.floor(Math.random()*t+1)}},dx=function(){this.utilities=new Utilities};DX=new dx;

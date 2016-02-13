@@ -3,7 +3,7 @@
 
 *.iml
 node_modules
-
+notes.txt
 
 ## Directory-based project format:
 .idea/
