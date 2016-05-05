@@ -11,7 +11,9 @@
       this['d'+i] = new dice('d'+i,faces);
     }
 };
-
+dx.prototype.addDice = function(name,faces) {
+    this[name] = new dice(name,faces);
+}
 dx.prototype.showDice = function(){
   var storedDice = [];
   for (var key in this) {
@@ -95,7 +97,7 @@ dx.prototype.roll = function(rollFunc) {
       var rollResult = that._evaluateSingleRoll(roll.trim())
       rolls.push(rollResult);
       if(value === undefined) {
-        if(isNaN(parseInt(rollResult.value))) value = '';
+        if(isNaN(parseInt(rollResult.value))) value = ' ';
         else value = 0;
       }
       if(op === '+' | op === undefined) value += rollResult.value;
