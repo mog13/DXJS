@@ -58,10 +58,18 @@ dx.prototype._evaluateSingleRoll = function(rollFunc) {
     }
 
   }
+
+  var overview = rolls.reduce(function(previousValue, currentValue, currentIndex, array) {
+  var retVal =  previousValue;
+  if(currentIndex != 0) retVal += '  ';
+  return retVal + currentValue.value;
+},'');
+
   return {
     'value':value,
     'throw':rollFunc,
-    'rolls':rolls
+    'rolls':rolls,
+    'overview':overview
   };
 };
 
@@ -72,7 +80,8 @@ dx.prototype.roll = function(rollFunc) {
   var rolls = [];
   //for each one evaluate it as a single roll
   var op = undefined;
-  var value = 0;
+  var value = undefined;
+  var overview = '';
   var that = this;
   parts.forEach(function(roll){
   switch(roll) {
@@ -85,17 +94,26 @@ dx.prototype.roll = function(rollFunc) {
     default:
       var rollResult = that._evaluateSingleRoll(roll.trim())
       rolls.push(rollResult);
+      if(value === undefined) {
+        if(isNaN(parseInt(rollResult.value))) value = '';
+        else value = 0;
+      }
       if(op === '+' | op === undefined) value += rollResult.value;
       else if(op === '-') value -= rollResult.value;
       else if(op === '*') value *= rollResult.value;
       else if(op === '/') value /= rollResult.value;
+
+      if(op!= undefined) overview += ' ' + op + ' ';
+      overview += '('+ rollResult.overview +') ';
+
   }
 
 });
   return {
     'value':value,
     'throw':rollFunc,
-    'rolls':rolls
+    'rolls':rolls,
+    'overview':overview
     };
 };
 
