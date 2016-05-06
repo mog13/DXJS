@@ -4,16 +4,23 @@
 //require('./dice.js');
  var dx = function (){
     for(var i= 2; i <=20 ;i++){
-      var faces = [];
-      for(var n = 1; n <=i;n++){
-        faces.push(n);
-      }
-      this['d'+i] = new dice('d'+i,faces);
+      this.addStandardDice(i);
     }
 };
 dx.prototype.addDice = function(name,faces) {
     this[name] = new dice(name,faces);
+    return this[name];
 }
+
+dx.prototype.addStandardDice = function(amountOfFaces) {
+  var faces = [];
+  for(var n = 1; n <=amountOfFaces;n++){
+    faces.push(n);
+  }
+  this['d'+amountOfFaces] = new dice('d'+amountOfFaces,faces);
+  return this['d'+amountOfFaces]
+};
+
 dx.prototype.showDice = function(){
   var storedDice = [];
   for (var key in this) {
@@ -52,27 +59,13 @@ dx.prototype._evaluateSingleRoll = function(rollFunc) {
       this._tryToParseDice(die);
       //@todo need better catching here!
     }
-  var value = 0;
-    for(var i =0; i <repeater;i++){
-      var roll = this[die].roll();
-      rolls.push({'value':roll,'throw':die});
-      value += roll;
-    }
+    return this[die].handfull(repeater);
 
   }
 
-  var overview = rolls.reduce(function(previousValue, currentValue, currentIndex, array) {
-  var retVal =  previousValue;
-  if(currentIndex != 0) retVal += '  ';
-  return retVal + currentValue.value;
-},'');
 
-  return {
-    'value':value,
-    'throw':rollFunc,
-    'rolls':rolls,
-    'overview':overview
-  };
+
+
 };
 
 dx.prototype.roll = function(rollFunc) {

@@ -24,8 +24,8 @@ describe('unit tests for the DX object', function () {
       it('it should comply to the format dx',function(){
         for (var i = 0; i < 10; i++) {
             var roll = DX._evaluateSingleRoll('d4');
-            expect(roll).toBeGreaterThan(0);
-            expect(roll).toBeLessThan(5);
+            expect(roll.value).toBeGreaterThan(0);
+            expect(roll.value).toBeLessThan(5);
         }
       })
     });
