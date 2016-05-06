@@ -1,6 +1,8 @@
 # DXJS
 JS library for easy dice rolls
 
+*add demo*
+
 ---
 
 ### Install
@@ -20,18 +22,27 @@ JS library for easy dice rolls
 DXJS works by using dice objects. d2-d20 are created by default and can be accessed by:
 
 ```
-DX.d5.roll();```
+DX.d5.roll();
+```
 
 to view the last throw a dice has made you can use
 
 ```
-DX.d5.value;```
+DX.d5.value;
+```
+
+You can throw many of the same dice at once by using handfull:
+
+```
+DX.d4.handfull(5);
+```
 
 If you need a higher dice then you can easily add a standard numerical die:
 
 ```
 DX.addStandardDice(100);
-DX.d100.roll();```
+DX.d100.roll();
+```
 
 ### Use custom dice
 You can add your own dice to DX easily, simply name it and provide the face you want.
