@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mog13/DXJS.svg?branch=master)](https://travis-ci.org/mog13/DXJS)
+
 # DXJS
 JS library for easy dice rolls
 
