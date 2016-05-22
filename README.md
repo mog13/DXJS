@@ -21,25 +21,25 @@ JS library for easy dice rolls
 
 DXJS works by using dice objects. d2-d20 are created by default and can be accessed by:
 
-```
+```javascript
 DX.d5.roll();
 ```
 
 to view the last throw a dice has made you can use
 
-```
+```javascript
 DX.d5.value;
 ```
 
 You can throw many of the same dice at once by using handfull:
 
-```
+```javascript
 DX.d4.handfull(5);
 ```
 
 If you need a higher dice then you can easily add a standard numerical die:
 
-```
+```javascript
 DX.addStandardDice(100);
 DX.d100.roll();
 ```
@@ -47,7 +47,7 @@ DX.d100.roll();
 ### Use custom dice
 You can add your own dice to DX easily, simply name it and provide the face you want.
 
-```
+```javascript
 DX.addDice('decider',['yes','no']);
 DX.addDice('mixed',['0','JS',{atk:4,def:1}]);
 
@@ -56,14 +56,14 @@ DX.mixed.roll();
 ```
 
 or chain together for convenience:
-```
+```javascript
 DX.addDice('elements',['fire','wind','water','earth']).roll();
 ```
 
 ### Mixing dice and including functions
 you can roll handfulls of dice easily using:
 
-```
+```javascript
 DX.roll('4d2 + 9d3 - 1d20');
 ```
 
