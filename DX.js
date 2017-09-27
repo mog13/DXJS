@@ -70,26 +70,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _DX = __webpack_require__(1);
-
-var _DX2 = _interopRequireDefault(_DX);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = _DX2.default;
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -105,6 +90,10 @@ var _Dice = __webpack_require__(2);
 
 var _Dice2 = _interopRequireDefault(_Dice);
 
+var _Handful = __webpack_require__(4);
+
+var _Handful2 = _interopRequireDefault(_Handful);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -114,19 +103,30 @@ var DX = function () {
         _classCallCheck(this, DX);
 
         this.dice = {};
+        this.handful = {};
         this.addDice("d2", [1, 2]);
     }
 
     _createClass(DX, [{
         key: "addDice",
-        value: function addDice(name, faces, historyLimit, onLand) {
+        value: function addDice(name, faces, config) {
             if (this.dice[name]) {
                 throw "A dice with the name " + name + " already exists";
             } else {
-                return this.dice[name] = new _Dice2.default(name, faces, historyLimit, onLand);
+                return this.dice[name] = new _Dice2.default(name, faces, config);
             }
         }
-        //this can be a single dice/array/new dice object
+    }, {
+        key: "addHandful",
+        value: function addHandful(name, expression, config) {
+            if (this.handful[name]) {
+                throw "A handful with the name " + name + " already exists";
+            } else {
+                return this.handful[name] = new _Handful2.default(name, expression, config);
+            }
+        }
+
+        //this can be a single dice/array/new dice object/handful
 
     }, {
         key: "roll",
@@ -135,8 +135,11 @@ var DX = function () {
                 if (this.dice[dice]) {
                     return this.dice[dice].roll();
                 } else {
-                    //execute the roll command
-                    return -1;
+                    if (this.handful[dice]) {
+                        return this.handful[dice].roll();
+                    } else {
+                        return new _Handful2.default(null, dice, {}).roll();
+                    }
                 }
             } else {
                 if (Array.isArray(dice)) {
@@ -156,6 +159,21 @@ var DX = function () {
 }();
 
 exports.default = new DX();
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _DX = __webpack_require__(0);
+
+var _DX2 = _interopRequireDefault(_DX);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = _DX2.default;
 
 /***/ }),
 /* 2 */
@@ -245,6 +263,198 @@ var DiceFace = function DiceFace(face) {
 
 exports.default = DiceFace;
 ;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _DiceGroup = __webpack_require__(5);
+
+var _DiceGroup2 = _interopRequireDefault(_DiceGroup);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Handfull = function () {
+    function Handfull(name, expression, config) {
+        _classCallCheck(this, Handfull);
+
+        this.name = name;
+        this.expression = expression;
+        this.tokens = [];
+        this.tokenizeExpression();
+        this.config = config || {};
+        this.history = [];
+        if (!this.config.historyLimit) this.config.historyLimit = 100;
+    }
+
+    _createClass(Handfull, [{
+        key: "roll",
+        value: function roll() {
+            var _this = this;
+
+            var rollTokens = this.tokens.slice();
+            var outcome = {
+                total: 0,
+                label: "",
+                input: this.expression,
+                rolls: []
+            };
+
+            //roll the dice, build the label and populate the rolls
+            rollTokens.forEach(function (token) {
+                if (token.type === "dg") {
+                    token.roll = token.val.roll();
+                    outcome.label += "" + token.roll.label;
+                    outcome.rolls.push(token.roll);
+                } else {
+                    outcome.label += "" + token.val;
+                }
+            });
+
+            rollTokens = this.handleOpToken(rollTokens, "/");
+            rollTokens = this.handleOpToken(rollTokens, "*");
+            rollTokens = this.handleOpToken(rollTokens, "-");
+            rollTokens = this.handleOpToken(rollTokens, "+");
+            outcome.total = rollTokens.reduce(function (accumulator, token) {
+                return accumulator + _this.getTokenValue(token);
+            }, 0);
+
+            this.history = [outcome].concat(this.history);
+            if (this.history.length > this.config.historyLimit) this.history.pop();
+
+            return outcome;
+        }
+    }, {
+        key: "getTokenValue",
+        value: function getTokenValue(token) {
+            if (token.type === "dg") return token.roll.total;
+            return token.val;
+        }
+    }, {
+        key: "handleOpToken",
+        value: function handleOpToken(rollTokens, op) {
+            for (var i = 0; i < rollTokens.length; i++) {
+                if (rollTokens[i].val === op) {
+                    rollTokens[i] = {
+                        type: "calc",
+                        val: this.handleOp(this.getTokenValue(rollTokens[i - 1]), this.getTokenValue(rollTokens[i + 1]), op)
+                    };
+                    rollTokens.splice(i + 1, 1);
+                    rollTokens.splice(i - 1, 1);
+                    i -= 2;
+                }
+            }
+            return rollTokens;
+        }
+    }, {
+        key: "handleOp",
+        value: function handleOp(a, b, op) {
+            if (op === "/") return a / b;
+            if (op === "*") return a * b;
+            if (op === "-") return a - b;
+            return a + b;
+        }
+    }, {
+        key: "tokenizeExpression",
+        value: function tokenizeExpression() {
+            var _this2 = this;
+
+            var tokenSeparator = /([+\-*/])/g;
+            var tempTokens = this.expression.split(tokenSeparator);
+            tempTokens.forEach(function (token) {
+                if (tokenSeparator.test(token)) {
+                    _this2.tokens.push({ type: "op", val: token });
+                } else {
+                    _this2.tokens.push({ type: "dg", val: new _DiceGroup2.default(token) });
+                }
+            });
+        }
+    }]);
+
+    return Handfull;
+}();
+
+exports.default = Handfull;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _DX = __webpack_require__(0);
+
+var _DX2 = _interopRequireDefault(_DX);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DiceGroup = function () {
+    function DiceGroup(group) {
+        _classCallCheck(this, DiceGroup);
+
+        this.group = group;
+        this.diceMatch = null;
+        for (var dice in _DX2.default.dice) {
+            if (_DX2.default.dice.hasOwnProperty(dice)) {
+                if (this.group.indexOf(dice) >= 0) {
+                    this.diceMatch = dice;
+                }
+            }
+        }
+        if (this.diceMatch === null) throw "Could not find matching dice for group " + this.group;
+        var index = this.group.indexOf(this.diceMatch);
+        if (index == 0) {
+            this.multiplier = 1;
+        } else {
+            this.multiplier = Number.parseInt(this.group.slice(0, index));
+            if (Number.isNaN(this.multiplier)) throw "multiplier " + this.group.slice(0, index) + " is not valid";
+        }
+    }
+
+    _createClass(DiceGroup, [{
+        key: "roll",
+        value: function roll() {
+            var outcome = {
+                total: 0,
+                rolls: [],
+                label: "("
+            };
+            for (var i = 0; i < this.multiplier; i++) {
+                var roll = _DX2.default.roll(this.diceMatch);
+                outcome.rolls.push(roll);
+                outcome.total += roll.value;
+                outcome.label += "" + roll.value;
+                if (i !== this.multiplier - 1) outcome.label += "+";
+            }
+            outcome.label += ")";
+            return outcome;
+        }
+    }]);
+
+    return DiceGroup;
+}();
+
+exports.default = DiceGroup;
 
 /***/ })
 /******/ ]);
