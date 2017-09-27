@@ -114,7 +114,7 @@ var DX = function () {
         _classCallCheck(this, DX);
 
         this.dice = {};
-        this.addDice("D2", [1, 2]);
+        this.addDice("d2", [1, 2]);
     }
 
     _createClass(DX, [{
