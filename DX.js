@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("Dx", [], factory);
+		define("DX", [], factory);
 	else if(typeof exports === 'object')
-		exports["Dx"] = factory();
+		exports["DX"] = factory();
 	else
-		root["Dx"] = factory();
+		root["DX"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -80,25 +80,13 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 
 
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
+var _DX = __webpack_require__(1);
 
-var _Dice = __webpack_require__(1);
-
-var _Dice2 = _interopRequireDefault(_Dice);
+var _DX2 = _interopRequireDefault(_DX);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var DX = function DX() {
-    _classCallCheck(this, DX);
-
-    this.D2 = new _Dice2.default("D2", [1, 2]);
-};
-
-exports.default = DX;
+module.exports = _DX2.default;
 
 /***/ }),
 /* 1 */
@@ -113,7 +101,76 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _DiceFace = __webpack_require__(2);
+var _Dice = __webpack_require__(2);
+
+var _Dice2 = _interopRequireDefault(_Dice);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DX = function () {
+    function DX() {
+        _classCallCheck(this, DX);
+
+        this.dice = {};
+        this.addDice("D2", [1, 2]);
+    }
+
+    _createClass(DX, [{
+        key: "addDice",
+        value: function addDice(name, faces, historyLimit, onLand) {
+            if (this.dice[name]) {
+                throw "A dice with the name " + name + " already exists";
+            } else {
+                return this.dice[name] = new _Dice2.default(name, faces, historyLimit, onLand);
+            }
+        }
+        //this can be a single dice/array/new dice object
+
+    }, {
+        key: "roll",
+        value: function roll(dice) {
+            if (typeof dice === "string") {
+                if (this.dice[dice]) {
+                    return this.dice[dice].roll();
+                } else {
+                    //execute the roll command
+                    return -1;
+                }
+            } else {
+                if (Array.isArray(dice)) {
+                    return dice[Math.floor(Math.random() * dice.length)];
+                } else {
+                    if (dice instanceof _Dice2.default) {
+                        return dice.roll();
+                    } else {
+                        return this.addDice(dice.name, dice.faces, dice.historyLimit, dice.onLand).roll();
+                    }
+                }
+            }
+        }
+    }]);
+
+    return DX;
+}();
+
+exports.default = new DX();
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _DiceFace = __webpack_require__(3);
 
 var _DiceFace2 = _interopRequireDefault(_DiceFace);
 
@@ -122,15 +179,15 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Dice = function () {
-    function Dice(name, faces, historyLimit, onLand) {
+    function Dice(name, faces, config) {
         var _this = this;
 
         _classCallCheck(this, Dice);
 
         this.name = name;
         this.history = [];
-        this.historyLimit = historyLimit || 100;
-        this.onLand = onLand;
+        this.config = config || {};
+        if (!this.config.historyLimit) this.config.historyLimit = 100;
         this.faces = [];
         var tempFaces = [].concat(faces);
         tempFaces.forEach(function (face) {
@@ -143,9 +200,9 @@ var Dice = function () {
         value: function roll() {
             var outcome = this.faces[Math.floor(Math.random() * this.faces.length)];
             this.history = [outcome].concat(this.history);
-            if (this.history.length > this.historyLimit) this.history.pop();
-            if (this.onLand) {
-                this.onLand(outcome);
+            if (this.history.length > this.config.historyLimit) this.history.pop();
+            if (this.config.onLand) {
+                this.config.onLand(outcome);
             }
             return outcome;
         }
@@ -158,7 +215,7 @@ exports.default = Dice;
 ;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

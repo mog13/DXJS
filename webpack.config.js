@@ -1,10 +1,10 @@
 module.exports = {
-    entry: './lib/DX.js',
+    entry: './lib/index.js',
     output: {
         filename: 'DX.js',
         libraryTarget: 'umd',
         umdNamedDefine: true,
-        library: "Dx"
+        library: "DX"
     },
     module: {
         rules: [
@@ -20,4 +20,4 @@ module.exports = {
             }
         ]
     }
-}
+};
