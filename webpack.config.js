@@ -1,7 +1,7 @@
 module.exports = {
-    entry: './lib/index.js',
+    entry: './lib/DX.js',
     output: {
-        filename: 'dx.js',
+        filename: 'DX.js',
         libraryTarget: 'umd',
         umdNamedDefine: true,
         library: "Dx"
