@@ -1,8 +1,3 @@
 language: node_js
 node_js:
-  - "4.4.3"
-before_script:
-  - npm install
-script:
-  - gulp minify
-  - gulp unit-tests
+  - "node"
