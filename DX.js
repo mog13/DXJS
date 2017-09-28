@@ -96,6 +96,8 @@ var _Handful2 = _interopRequireDefault(_Handful);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var DX = function () {
@@ -104,10 +106,17 @@ var DX = function () {
 
         this.dice = {};
         this.handful = {};
-        this.addDice("d2", [1, 2]);
+        this.generateDice(100);
     }
 
     _createClass(DX, [{
+        key: "generateDice",
+        value: function generateDice(n) {
+            for (var i = 2; i <= n; i++) {
+                this.addDice("d" + i, [].concat(_toConsumableArray(Array(i + 1).keys())).splice(1));
+            }
+        }
+    }, {
         key: "addDice",
         value: function addDice(name, faces, config) {
             if (this.dice[name]) {
