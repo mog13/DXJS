@@ -1,9 +1,9 @@
-import { Dice } from "./Dice";
+import { Dice, diceDictionary } from "./Dice";
 
 describe("when using the Dice class", () => {
   describe("When initialising a new dice", () => {
     it("should be able to create a new instance using inline dice faces", () => {
-      let a = new Dice("testDice", [
+      let faceDice = new Dice("testDice", [
         { value: 1 },
         { value: 2 },
         { value: 3 },
@@ -11,14 +11,14 @@ describe("when using the Dice class", () => {
         { value: 5 },
         { value: 6 },
       ]);
-      expect(a).not.toBeNull();
+      expect(faceDice).not.toBeNull();
     });
     it("should be able to create a new instance using numbers", () => {
-      let a = new Dice("testDice", [1, 2, 3, 4, 5, 6]);
-      expect(a).not.toBeNull();
+      let numberDice = new Dice("testDice", [1, 2, 3, 4, 5, 6]);
+      expect(numberDice).not.toBeNull();
     });
     it("should be able to create a new instance using strings", () => {
-      let a = new Dice("testDice", [
+      let stringDice = new Dice("testDice", [
         "one",
         "two",
         "three",
@@ -26,10 +26,10 @@ describe("when using the Dice class", () => {
         "five",
         "six",
       ]);
-      expect(a).not.toBeNull();
+      expect(stringDice).not.toBeNull();
     });
     it("should be able to create a new instance using a mix of types", () => {
-      let a = new Dice("testDice", [
+      let mixedDice = new Dice("testDice", [
         { value: 1 },
         2,
         "three",
@@ -37,7 +37,11 @@ describe("when using the Dice class", () => {
         "five",
         { value: 6 },
       ]);
-      expect(a).not.toBeNull();
+      expect(mixedDice).not.toBeNull();
+    });
+    it("should add to the dice dictionary when initialised", () => {
+      new Dice("testDice", [1, 2, 3, 4, 5, 6]);
+      expect(diceDictionary["testDice"]).not.toBeNull();
     });
   });
 });

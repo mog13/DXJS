@@ -1,5 +1,6 @@
 import { DiceFace } from "./DiceFace";
 
+export const diceDictionary: Record<string, Dice> = {};
 export class Dice {
   faces: DiceFace[] = [];
   name: string = "";
@@ -12,5 +13,9 @@ export class Dice {
       }
       return { value: face };
     });
+
+    if (diceDictionary[name])
+      console.warn(`Dice ${name} already exists in dictionary.`);
+    diceDictionary[name] = this;
   }
 }
