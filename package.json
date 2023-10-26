@@ -6,7 +6,8 @@
   "module": "./lib/esm/index.js",
   "scripts": {
     "tsc": "rimraf ./lib && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
-    "prepublishOnly": "npm run tsc"
+    "test": "jest",
+    "prepublishOnly": "npm run test && npm run tsc"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,9 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "jest": "^29.7.0",
     "rimraf": "^5.0.5"
   }
 }
