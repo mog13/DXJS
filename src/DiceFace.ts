@@ -1,3 +1,4 @@
-export class DiceFace {
-  constructor() {}
-}
+export type DiceFace = {
+  value: unknown;
+  [key: string]: unknown;
+};
