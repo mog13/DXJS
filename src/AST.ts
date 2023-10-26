@@ -1,27 +1,28 @@
 import { Operator, Token } from "./Tokenizer";
 
-type Node = OperatorNode | DiceNode | NumberNode | BaseNode;
-interface BaseNode {
+export type ASTNode = OperatorNode | DiceNode | NumberNode | BaseNode;
+export interface BaseNode {
   type: "operator" | "dice" | "number" | "empty";
 }
-interface OperatorNode extends BaseNode {
+export interface OperatorNode extends BaseNode {
   type: "operator";
   operator: Operator;
   left: BaseNode;
   right: BaseNode;
 }
 
-interface DiceNode extends BaseNode {
+export interface DiceNode extends BaseNode {
   type: "dice";
   dice: string;
+  multiDice: number;
 }
 
-interface NumberNode extends BaseNode {
+export interface NumberNode extends BaseNode {
   type: "number";
   number: number;
 }
 
-export const parseTokens = (tokens: Token[]): Node => {
+export const parseTokens = (tokens: Token[]): ASTNode => {
   let tokenIndex = 0;
 
   const peekToken = (): Token | null => {
@@ -50,7 +51,7 @@ export const parseTokens = (tokens: Token[]): Node => {
   }
 
   function isImplicitMultiplication(
-    left: Node,
+    left: ASTNode,
     nextToken: Token | null,
   ): boolean {
     if (left.type === "number" && nextToken?.type === "dice") {
@@ -60,7 +61,7 @@ export const parseTokens = (tokens: Token[]): Node => {
     // Add more cases as needed
     return false;
   }
-  function parseMultiplicativeTerms(): Node {
+  function parseMultiplicativeTerms(): ASTNode {
     let left = parseAmounts();
 
     while (
@@ -86,7 +87,7 @@ export const parseTokens = (tokens: Token[]): Node => {
     return left;
   }
 
-  function parseAmounts(): Node {
+  function parseAmounts(): ASTNode {
     const token = peekToken();
     tokenIndex++;
 
@@ -102,6 +103,7 @@ export const parseTokens = (tokens: Token[]): Node => {
       return {
         type: "dice",
         dice: token.value,
+        multiDice: token.multiDice || 1,
       } as DiceNode;
     } else {
       throw new Error("Unexpected token");

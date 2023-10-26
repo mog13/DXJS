@@ -18,4 +18,8 @@ export class Dice {
       console.warn(`Dice ${name} already exists in dictionary.`);
     diceDictionary[name] = this;
   }
+
+  roll = (): DiceFace => {
+    return this.faces[Math.floor(Math.random() * this.faces.length)];
+  };
 }

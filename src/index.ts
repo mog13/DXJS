@@ -1,8 +1,6 @@
 import { Dice, diceDictionary } from "./Dice.js";
 import { DiceFace } from "./DiceFace.js";
 
-export { Dice, DiceFace, diceDictionary };
-
 const generateDiceDictionary = () => {
   for (let i = 1; i <= 100; i++) {
     diceDictionary[`d${i}`] = new Dice(
@@ -12,3 +10,5 @@ const generateDiceDictionary = () => {
   }
 };
 generateDiceDictionary();
+
+export { Dice, DiceFace, diceDictionary, generateDiceDictionary };
