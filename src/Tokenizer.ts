@@ -1,10 +1,12 @@
-type Token = {
+export type Token = {
   raw: string;
   value: string | number;
   type: "dice" | "number" | "operator";
+  multiDice?: number;
 };
 
 const operators = ["+", "-", "*", "/"];
+export type Operator = (typeof operators)[number];
 
 export const Tokenize = (input: string): Token[] => {
   let panic = 0;
@@ -51,5 +53,17 @@ export const Tokenize = (input: string): Token[] => {
     }
   }
 
+  //change any collections of number then dice to be multiDice
+  for (let i = 0; i < tokens.length; i++) {
+    if (tokens[i].type === "number" && tokens[i + 1]?.type === "dice") {
+      tokens[i] = {
+        raw: `${tokens[i].raw}${tokens[i + 1].raw}`,
+        value: tokens[i + 1].value,
+        multiDice: Number(tokens[i].value),
+        type: "dice",
+      };
+      tokens.splice(i + 1, 1);
+    }
+  }
   return tokens;
 };

@@ -1,8 +1,7 @@
 import { Dice, diceDictionary } from "./Dice.js";
 import { DiceFace } from "./DiceFace.js";
-import { Tokenize } from "./Tokenizer";
 
-export { Dice, DiceFace, diceDictionary, Tokenize };
+export { Dice, DiceFace, diceDictionary };
 
 const generateDiceDictionary = () => {
   for (let i = 1; i <= 100; i++) {
