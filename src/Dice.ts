@@ -1,7 +1,3 @@
-
-export class Dice  {
-
-	constructor() {
-
-	}
+export class Dice {
+  constructor() {}
 }

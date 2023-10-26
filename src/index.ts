@@ -1,7 +1,4 @@
-import  {Dice} from "./Dice.js";
-import {DiceFace} from "./DiceFace.js";
+import { Dice } from "./Dice.js";
+import { DiceFace } from "./DiceFace.js";
 
-export {
-	Dice,
-	DiceFace
-}
+export { Dice, DiceFace };

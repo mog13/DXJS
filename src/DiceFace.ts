@@ -1,5 +1,3 @@
 export class DiceFace {
-	constructor() {
-		
-	}
+  constructor() {}
 }
