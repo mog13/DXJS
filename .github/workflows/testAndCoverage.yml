@@ -1,15 +1,11 @@
 name: Test, lint and Code Coverage
 
-on: [ push, pull_request ]
+on: [ push ]
 
 jobs:
   build:
 
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [ 10.x, 12.x, 14.x ]
 
     steps:
       - name: Checkout repository
@@ -18,7 +14,7 @@ jobs:
       - name: Set up Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 14.x
 
       - name: Install dependencies
         run: npm install
