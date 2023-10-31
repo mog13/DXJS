@@ -1,4 +1,5 @@
 ## DXJS
+[![codecov](https://codecov.io/gh/mog13/DXJS/graph/badge.svg?token=bYrtpjhYB2)](https://codecov.io/gh/mog13/DXJS)
 
 DXJS is a library for simulating dice rolls commonly used in tabletop games. It provides a range of standard
 dice from d2 to d100, as well as the ability to define and roll custom dice. The library allows dice rolls to be
