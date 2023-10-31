@@ -5,25 +5,8 @@ describe("when using a AST", () => {
     let ast = parseTokens([{ type: "dice", value: "d6" }]);
     expect(ast).toEqual({
       dice: "d6",
+      multiDice: 1,
       type: "dice",
-    });
-  });
-  it("should correctly parse a single dice with implicit multiplication", () => {
-    let ast = parseTokens([
-      { type: "number", value: 5 },
-      { type: "dice", value: "d6" },
-    ]);
-    expect(ast).toEqual({
-      left: {
-        number: 5,
-        type: "number",
-      },
-      operator: "*",
-      right: {
-        dice: "d6",
-        type: "dice",
-      },
-      type: "operator",
     });
   });
 
@@ -41,6 +24,7 @@ describe("when using a AST", () => {
       operator: "*",
       right: {
         dice: "d6",
+        multiDice: 1,
         type: "dice",
       },
       type: "operator",
@@ -64,6 +48,7 @@ describe("when using a AST", () => {
         operator: "*",
         right: {
           dice: "d6",
+          multiDice: 1,
           type: "dice",
         },
         type: "operator",
@@ -77,6 +62,7 @@ describe("when using a AST", () => {
         operator: "*",
         right: {
           dice: "d4",
+          multiDice: 1,
           type: "dice",
         },
         type: "operator",

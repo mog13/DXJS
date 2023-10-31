@@ -1,83 +1,69 @@
 import { ASTNode, DiceNode, NumberNode, OperatorNode } from "./AST";
 import { diceDictionary } from "./Dice";
 
-export const evaluate = (node: ASTNode): string => {
+type EvaluationResult = { value: number; evaluation: string };
+
+export const evaluate = (node: ASTNode): EvaluationResult => {
+  const numberNode = node as NumberNode;
   switch (node.type) {
     case "operator":
       return evaluateOperator(node as OperatorNode);
     case "dice":
       return evaluateDice(node as DiceNode);
     case "number":
-      return (node as NumberNode).number.toString();
+      return {
+        evaluation: numberNode.number.toString(),
+        value: numberNode.number,
+      };
     default:
       throw new Error(`Unknown node type: ${node.type}`);
   }
 };
 
-const evaluateOperator = (node: OperatorNode): string => {
+const evaluateOperator = (node: OperatorNode): EvaluationResult => {
   const left = evaluate(node.left);
   const right = evaluate(node.right);
-  return `${left} ${node.operator} ${right}`;
-};
-
-export const evaluateDice = (node: DiceNode): string => {
-  const dice = node.dice;
-  const multiDice = node.multiDice || 1;
-  const diceObject = diceDictionary[dice];
-  if (!diceObject) {
-    throw new Error(`Unknown dice ${dice}`);
-  }
-  let total = "";
-  for (let i = 0; i < multiDice; i++) {
-    const roll = diceObject.roll();
-    total += `${i !== 0 ? " + " : ""}${roll.value}`;
-  }
-  return multiDice === 1 ? total : `(${total})`;
-};
-
-export const compute = (node: ASTNode): number => {
-  switch (node.type) {
-    case "operator":
-      return computeOperator(node as OperatorNode);
-    case "dice":
-      return computeDice(node as DiceNode);
-    case "number":
-      return (node as NumberNode).number;
-    default:
-      throw new Error(`Unknown node type: ${node.type}`);
-  }
-};
-
-const computeOperator = (node: OperatorNode): number => {
-  const left = compute(node.left);
-  const right = compute(node.right);
+  let computationResult: number | null = null;
   switch (node.operator) {
     case "+":
-      return left + right;
+      computationResult = left.value + right.value;
+      break;
     case "-":
-      return left - right;
+      computationResult = left.value - right.value;
+      break;
     case "*":
-      return left * right;
+      computationResult = left.value * right.value;
+      break;
     case "/":
-      return left / right;
+      computationResult = left.value / right.value;
+      break;
     default:
       throw new Error(`Unknown operator: ${node.operator}`);
   }
+  return {
+    evaluation: `${left.evaluation} ${node.operator} ${right.evaluation}`,
+    value: computationResult,
+  };
 };
 
-const computeDice = (node: DiceNode): number => {
+export const evaluateDice = (node: DiceNode): EvaluationResult => {
   const dice = node.dice;
   const multiDice = node.multiDice || 1;
   const diceObject = diceDictionary[dice];
   if (!diceObject) {
     throw new Error(`Unknown dice ${dice}`);
   }
-  let total = 0;
+  let totalEval = "";
+  let totalValue = 0;
   for (let i = 0; i < multiDice; i++) {
     const roll = diceObject.roll();
+    totalEval += `${i !== 0 ? " + " : ""}${roll.value}`;
     if (typeof roll.value === "number") {
-      total += Number(roll.value);
+      totalValue += Number(roll.value);
     }
   }
-  return total;
+  return {
+    evaluation: multiDice === 1 ? totalEval : `(${totalEval})`,
+    value: totalValue,
+  };
 };
